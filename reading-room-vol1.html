@@ -1,0 +1,949 @@
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,500&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --bg: #16241C;
+    --bg2: #1E3226;
+    --bg2-line: #2B4636;
+    --card: #F1E9D8;
+    --card-shadow: #0D160F;
+    --ink: #2A2015;
+    --ink-soft: #4A3F2F;
+    --brass: #BB9457;
+    --brass-bright: #D8B778;
+    --stamp: #8B3A3A;
+    --cream: #EDE6D6;
+    --cream-dim: #B9C4B4;
+    --font-display: 'Fraunces', serif;
+    --font-body: 'Source Serif 4', serif;
+    --font-mono: 'Space Mono', monospace;
+  }
+
+  * { box-sizing: border-box; }
+
+  .archive-root {
+    background: var(--bg);
+    background-image:
+      radial-gradient(ellipse at 20% 0%, var(--bg2) 0%, transparent 55%),
+      radial-gradient(ellipse at 85% 100%, var(--bg2) 0%, transparent 50%);
+    color: var(--cream);
+    font-family: var(--font-body);
+    min-height: 100%;
+    padding: 40px 24px 64px;
+    line-height: 1.5;
+  }
+
+  .archive-header {
+    max-width: 1040px;
+    margin: 0 auto 36px;
+    text-align: center;
+  }
+
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--brass-bright);
+    display: inline-block;
+    border-top: 1px solid var(--brass);
+    border-bottom: 1px solid var(--brass);
+    padding: 5px 14px;
+    margin-bottom: 18px;
+  }
+
+  .archive-title {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: clamp(32px, 5vw, 52px);
+    margin: 0 0 10px;
+    letter-spacing: -0.5px;
+  }
+
+  .archive-sub {
+    font-style: italic;
+    color: var(--cream-dim);
+    font-size: 16px;
+    max-width: 480px;
+    margin: 0 auto;
+  }
+
+  .archive-layout {
+    max-width: 1040px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 28px;
+    align-items: start;
+  }
+
+  @media (max-width: 760px) {
+    .archive-layout { grid-template-columns: 1fr; }
+  }
+
+  /* ---- Catalog drawer (menu) ---- */
+  .drawer {
+    background: var(--bg2);
+    border: 1px solid var(--bg2-line);
+    border-radius: 4px;
+    padding: 6px;
+  }
+
+  .drawer-label {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--cream-dim);
+    padding: 10px 12px 6px;
+  }
+
+  .drawer-item {
+    width: 100%;
+    text-align: left;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid var(--bg2-line);
+    color: var(--cream);
+    font-family: var(--font-body);
+    padding: 14px 12px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    border-radius: 2px;
+    transition: background 0.15s ease, padding-left 0.15s ease;
+  }
+
+  .drawer-item:last-child { border-bottom: none; }
+
+  .drawer-item:hover { background: rgba(216, 183, 120, 0.08); padding-left: 16px; }
+
+  .drawer-item.active {
+    background: rgba(216, 183, 120, 0.14);
+    padding-left: 16px;
+    box-shadow: inset 3px 0 0 var(--brass-bright);
+  }
+
+  .drawer-tag {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--brass-bright);
+    letter-spacing: 1px;
+  }
+
+  .drawer-title { font-size: 16px; line-height: 1.3; }
+
+  /* ---- Reading card ---- */
+  .card {
+    background: var(--card);
+    color: var(--ink);
+    border-radius: 3px;
+    padding: 32px 34px;
+    box-shadow: 0 18px 0 -12px var(--card-shadow), 0 22px 30px -18px rgba(0,0,0,0.55);
+    position: relative;
+  }
+
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; height: 3px;
+    background: repeating-linear-gradient(90deg, var(--brass) 0 10px, transparent 10px 18px);
+    opacity: 0.6;
+  }
+
+  .card-eyebrow {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--ink-soft);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+  }
+
+  .card-title {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 28px;
+    margin: 6px 0 8px;
+    line-height: 1.15;
+  }
+
+  .card-authors {
+    font-style: italic;
+    color: var(--ink-soft);
+    margin-bottom: 14px;
+    font-size: 15px;
+  }
+
+  .card-desc { font-size: 15.5px; margin-bottom: 22px; }
+
+  .card-actions {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    flex-wrap: wrap;
+    padding-top: 18px;
+    border-top: 1px dashed var(--ink-soft);
+  }
+
+  .download-btn {
+    font-family: var(--font-mono);
+    font-size: 14px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    background: var(--ink);
+    color: var(--card);
+    border: none;
+    padding: 12px 20px;
+    border-radius: 2px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: transform 0.12s ease, background 0.12s ease;
+  }
+
+  .download-btn:hover { background: var(--stamp); transform: translateY(-1px); }
+
+  /* date-due stamp card, the signature element */
+  .duecard {
+    font-family: var(--font-mono);
+    border: 1px solid var(--ink-soft);
+    border-radius: 2px;
+    padding: 8px 14px;
+    min-width: 150px;
+  }
+
+  .duecard-label {
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+
+  .duecard-count {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--stamp);
+    transform: rotate(-2deg);
+    display: inline-block;
+  }
+
+  .duecard-count.bump { animation: stampbump 0.35s ease; }
+  @keyframes stampbump {
+    0% { transform: rotate(-2deg) scale(1); }
+    40% { transform: rotate(-6deg) scale(1.25); }
+    100% { transform: rotate(-2deg) scale(1); }
+  }
+
+  /* ---- Marginalia (comments) ---- */
+  .marginalia-section { margin-top: 34px; }
+
+  .marginalia-heading {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 20px;
+    color: var(--cream);
+    margin: 0 0 4px;
+  }
+
+  .marginalia-hint {
+    font-size: 14px;
+    color: var(--cream-dim);
+    margin-bottom: 16px;
+  }
+
+  .marginalia-form {
+    background: var(--bg2);
+    border: 1px solid var(--bg2-line);
+    border-radius: 4px;
+    padding: 16px;
+    margin-bottom: 20px;
+  }
+
+  .marginalia-form input,
+  .marginalia-form textarea {
+    width: 100%;
+    background: rgba(237, 230, 214, 0.06);
+    border: 1px solid var(--bg2-line);
+    border-radius: 2px;
+    color: var(--cream);
+    font-family: var(--font-body);
+    padding: 10px 12px;
+    font-size: 14px;
+    margin-bottom: 10px;
+    resize: vertical;
+  }
+
+  .marginalia-form textarea { min-height: 70px; }
+
+  .marginalia-form input::placeholder,
+  .marginalia-form textarea::placeholder { color: var(--cream-dim); }
+
+  .marginalia-submit {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    background: var(--brass-bright);
+    color: var(--ink);
+    border: none;
+    padding: 10px 18px;
+    border-radius: 2px;
+    cursor: pointer;
+  }
+
+  .marginalia-submit:hover { background: var(--brass); }
+  .marginalia-submit:disabled { opacity: 0.5; cursor: default; }
+
+  .note-list { display: flex; flex-direction: column; gap: 12px; }
+
+  .note {
+    background: var(--card);
+    color: var(--ink);
+    border-radius: 2px;
+    padding: 14px 16px;
+    max-width: 92%;
+    box-shadow: 0 8px 16px -10px rgba(0,0,0,0.5);
+    transform: rotate(var(--tilt, -0.6deg));
+  }
+
+  .note:nth-child(even) { align-self: flex-end; --tilt: 0.6deg; }
+
+  .note-meta {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--ink-soft);
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .note-body { font-size: 14.5px; }
+
+  .empty-state {
+    font-size: 14px;
+    color: var(--cream-dim);
+    font-style: italic;
+    padding: 6px 0 2px;
+  }
+
+  .status-line {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--cream-dim);
+    margin-top: 6px;
+    min-height: 14px;
+  }
+
+  .shared-note {
+    text-align: center;
+    max-width: 1040px;
+    margin: 30px auto 0;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--cream-dim);
+    letter-spacing: 0.5px;
+  }
+
+  /* ---- Correspondence (contact the author) ---- */
+  .correspondence {
+    max-width: 1040px;
+    margin: 56px auto 0;
+  }
+
+  .correspondence-heading-row {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    margin-bottom: 4px;
+  }
+
+  .correspondence-title {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 26px;
+    margin: 0;
+  }
+
+  .correspondence-rule {
+    flex: 1;
+    height: 1px;
+    background: repeating-linear-gradient(90deg, var(--brass) 0 8px, transparent 8px 14px);
+    opacity: 0.7;
+  }
+
+  .correspondence-sub {
+    color: var(--cream-dim);
+    font-style: italic;
+    font-size: 16px;
+    margin: 6px 0 22px;
+    max-width: 560px;
+  }
+
+  .envelope {
+    background: var(--card);
+    color: var(--ink);
+    border-radius: 3px;
+    padding: 30px 34px;
+    position: relative;
+    box-shadow: 0 18px 0 -12px var(--card-shadow), 0 22px 30px -18px rgba(0,0,0,0.55);
+  }
+
+  .envelope::before {
+    content: '';
+    position: absolute;
+    inset: 10px;
+    border: 1px dashed rgba(42, 32, 21, 0.25);
+    border-radius: 2px;
+    pointer-events: none;
+  }
+
+  .envelope-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+
+  @media (max-width: 560px) {
+    .envelope-grid { grid-template-columns: 1fr; }
+  }
+
+  .field-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    display: block;
+    margin-bottom: 5px;
+  }
+
+  .field-wrap { margin-bottom: 14px; }
+  .field-wrap.full { grid-column: 1 / -1; }
+
+  .envelope select,
+  .envelope input,
+  .envelope textarea {
+    width: 100%;
+    background: rgba(42, 32, 21, 0.04);
+    border: 1px solid rgba(42, 32, 21, 0.25);
+    border-radius: 2px;
+    color: var(--ink);
+    font-family: var(--font-body);
+    padding: 10px 12px;
+    font-size: 14px;
+  }
+
+  .envelope textarea { min-height: 110px; resize: vertical; }
+
+  .envelope select { cursor: pointer; }
+
+  .recipient-line {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--ink-soft);
+    margin: -4px 0 18px;
+  }
+
+  .recipient-line span { color: var(--stamp); }
+
+  .send-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    padding-top: 16px;
+    border-top: 1px dashed var(--ink-soft);
+  }
+
+  .send-btn {
+    font-family: var(--font-mono);
+    font-size: 14px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    background: var(--ink);
+    color: var(--card);
+    border: none;
+    padding: 12px 22px;
+    border-radius: 2px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: transform 0.12s ease, background 0.12s ease;
+  }
+
+  .send-btn:hover { background: var(--stamp); transform: translateY(-1px); }
+
+  .send-status {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--ink-soft);
+  }
+</style>
+
+<div class="archive-root">
+  <div class="archive-header">
+    <span class="eyebrow">Reading Room, Vol. 1, Est. 2026</span>
+    <h1 class="archive-title">Interrogating Privatization</h1>
+    <p class="archive-sub">This resource is for persons seeking information on how to critically analyze the privatization of a publicly-funded good or service. Each chapter covers tools or concepts which, in rough sequence, walk readers through a method for assessing the relative value of private versus public delivery. The chapters are free to download. Borrow one, read it, and leave a note in the margin for the next visitor.</p>
+  </div>
+
+  <div class="archive-layout">
+    <nav class="drawer" id="drawer">
+      <div class="drawer-label">Chapters</div>
+      <!-- items injected by JS -->
+    </nav>
+
+    <main id="cardMount"></main>
+  </div>
+
+  <p class="shared-note">Download tallies and marginalia are shared with every visitor to this archive.</p>
+
+  <section class="correspondence">
+    <div class="correspondence-heading-row">
+      <h2 class="correspondence-title">Correspondence with the Author</h2>
+      <div class="correspondence-rule"></div>
+    </div>
+    <p class="correspondence-sub">This is a community project. Contributions by way of constructive criticism or suggested editorial fixes are welcome. If you wish to send a comment to the author alone, write it here where it will be respectively reviewed. It opens in your own email program, addressed and ready to send.</p>
+
+    <div class="envelope">
+      <div class="field-wrap full">
+        <label class="field-label" for="mailChapter">Regarding</label>
+        <select id="mailChapter"></select>
+      </div>
+      <p class="recipient-line">Will be sent to: <span id="mailRecipient"></span></p>
+
+      <div class="envelope-grid">
+        <div class="field-wrap">
+          <label class="field-label" for="mailName">Your name</label>
+          <input type="text" id="mailName" placeholder="Jane Reader" maxlength="60" />
+        </div>
+        <div class="field-wrap">
+          <label class="field-label" for="mailEmail">Your email (for reply)</label>
+          <input type="email" id="mailEmail" placeholder="you@example.com" maxlength="80" />
+        </div>
+      </div>
+
+      <div class="field-wrap full">
+        <label class="field-label" for="mailBody">Message</label>
+        <textarea id="mailBody" placeholder="What did you want to ask or tell the author?" maxlength="2000"></textarea>
+      </div>
+
+      <div class="send-row">
+        <button class="send-btn" id="mailSendBtn">Send via Email</button>
+        <span class="send-status" id="mailStatus"></span>
+      </div>
+    </div>
+  </section>
+</div>
+
+<script>
+(function(){
+  const CATALOG = [
+    {
+      id: 'Motivation',
+      tag: 'Chapter 1',
+      title: 'Motivation',
+      authors: 'Roland Zullo, 2026',
+      desc: 'An initial chapter, where I explain the purpose of the book, outline the chapters within, declare my motivation, and express gratitude toward the persons, organizations, and circumstances that materially shaped the manuscript.',
+      url: 'https://drive.google.com/file/d/1oSfQDDgVBP-dCXni9V9jP18zMGyhBv48/view?usp=sharing',
+      authorName: 'Author, "Motivation"',
+      authorEmail: 'rzullo@umich.edu'
+    },
+    {
+      id: 'Universalism',
+      tag: 'Chapter 2',
+      title: 'Universalism and Privatization',
+      authors: 'Roland Zullo, 2026',
+      desc: 'In this chapter, I set forth a theory for deciding when socialized models are superior to privatized models of production in areas of the economy.  The theory centers on the concept of universalism, defined as fair and equal access to goods and services that are collectively financed or owned.  Socialization is the more cost-effective delivery model under conditions where universalism is politically compelled.',
+      url: 'https://drive.google.com/file/d/1GB3cvw3sXdOglGeaEsyTHZnHRwbRk1UE/view?usp=sharing',
+      authorName: 'Author, "Universalism and Privatization"',
+      authorEmail: 'rzullo@umich.edu'
+    },
+    {
+      id: 'Inequality',
+      tag: 'Chapter 3',
+      title: 'Privatization and Inequality',
+      authors: 'Roland Zullo, 2026',
+      desc: 'One of the most pressing social problems of the present era is economic inequality.  In this chapter, I discuss how privatization exacerbates inequality.  A public-private relationship carries five intrinsic burdens that raise the cost of production.  Contractors counter the burdens by hiring cheaper labor and by rolling back good or service dimensions which are critical to a universalistic mission.  The overall effect is greater economic and social inequality.',
+      url: 'https://drive.google.com/file/d/19D61NCk6fy9KvpH8LbcBC7Hv2WpAT9Dt/view?usp=sharing',
+      authorName: 'Author, "Privatization aand Inequality"',
+      authorEmail: 'rzullo@umich.edu'
+    },
+    {
+      id: 'Output Standards',
+      tag: 'Chapter 4',
+      title: 'Setting Output Standards',
+      authors: 'Roland Zullo, 2026',
+      desc: 'A fair comparison between a socialized and privatized operation requires that the two systems are held to the same output standards.  In this chapter, I describe a method for compiling a comprehensive set of performance standards that can be codified into bid requests and public-private agreements. The method involves conducting an informal job analysis with the persons that directly perform the work.',
+      url: 'https://drive.google.com/file/d/1Tkkl2RzSk0ujtw0EbRKknhXVfgP-ceG_/view?usp=sharing',
+      authorName: 'Author, "Output Standards"',
+      authorEmail: 'rzullo@umich.edu'
+    },
+    {
+      id: 'Labor Inputs',
+      tag: 'Chapter 5',
+      title: 'Labor Inputs',
+      authors: 'Roland Zullo, 2026',
+      desc: 'Critical to protecting the integrity of a publicly-funded good or service is ensuring that the workforce involved in production has the requisite qualifications. The privatization of a publicly-funded operation usually results in a governing authority relinquishing control over human resource functions, such as hiring, training and performance evaluation. In this chapter, I propose requiring bidders to submit bondable staffing plans in their proposals, which can be compared against the socialized operation to judge the qualifications of the contractor, predict how a good or service will change after privatization, and provide a basis for making quantitative adjustments to the bid price.',
+      url: 'https://drive.google.com/file/d/1Cj8LdxqEV4GpLm6NfUM_3mvlO3CAy4wD/view?usp=sharing',
+      authorName: 'Author, "Labor Inputs"',
+      authorEmail: 'rzullo@umich.edu'
+    },
+    {
+      id: 'Non-Labor Inputs',
+      tag: 'Chapter 6',
+      title: 'Non-Labor Inputs',
+      authors: 'Roland Zullo, 2026',
+      desc: 'The quality of non-labor inputs, i.e., the raw materials, equipment and supplies needed to carry out production are threatened by the cost-reduction incentives inherent with privatization. In this chapter, I demonstrate the risk with an example from the provision of food in prisons and with CDC data on K-12 public schools. The findings underscore the importance for the governing authority to maintain control over critical non-labor inputs.',
+      url: 'https://drive.google.com/file/d/1he1-93bWVbOpqGceScdRDbteXfDYJZO9/view?usp=sharing',
+      authorName: 'Author, "Non-Labor Inputs"',
+      authorEmail: 'rzullo@umich.edu'
+    },
+    {
+      id: 'Financial Tricks',
+      tag: 'Chapter 7',
+      title: 'Financial Tricks of Deception',
+      authors: 'Roland Zullo, 2026',
+      desc: 'Comparing the value of privatized versus socialized production requires an examination of both output substance and price.  This chapter concerns price.  In this chapter, I describe a financial review method to arrive at comparative price, highlighting 12 deceptive tricks to watch for that are used to skew economic comparisons in favor of privatization.  Once completed, price can be matched with substance to arrive at relative value.',
+      url: 'https://drive.google.com/file/d/16V9MjJlZXy0vhZEfbvA8vsUL8cgdSY6I/view?usp=sharing',
+      authorName: 'Author, "Financial Tricks"',
+      authorEmail: 'rzullo@umich.edu'
+    },
+    {
+      id: 'Risk Assessment',
+      tag: 'Chapter 8',
+      title: 'Risk Assessment',
+      authors: 'Roland Zullo, 2026',
+      desc: 'It can be a challenge to forecast the longer-term risks posed by of privatization.  In this chapter, I propose a series of questions to aid in predicting three dimensions: contract price escalation, change in government liability, and the cost of performance monitoring.  Tactics to mitigate against the negative effects of each dimension are discussed.',
+      url: 'https://drive.google.com/file/d/1sHi9H0V3Ea44B9qpxON9erEeE5IONTyi/view?usp=sharing',
+      authorName: 'Author, "Risk Assessment"',
+      authorEmail: 'rzullo@umich.edu'
+    },
+    {
+      id: 'Flexible Professionalism',
+      tag: 'Chapter 9',
+      title: 'Flexible Professionalism',
+      authors: 'Roland Zullo, 2026',
+      desc: 'Critics of privatization have an obligation to advance a positive alternative.  In this chapter, I present flexible professionalism (FP), a conceptual model for publicly-financed good or service production that involves the integration and coordination of labor and non-labor assets to handle non-routine and emergency community needs.  FP maximizes public value through centralized public management, inter-unit incentive alignment and cooperation, investments in contingency planning and training, workforce stability, and equitable compensation.  FP is the antithesis to the compartmentalization created by privatization.',
+      url: 'https://drive.google.com/file/d/1W2xWpN-ZQ6QAGyARAp_FS2Xb_DfgKvQe/view?usp=sharing',
+      authorName: 'Author, "Flexible Professionalism"',
+      authorEmail: 'rzullo@umich.edu'
+    },
+    {
+      id: 'Dogma',
+      tag: 'Chapter 10',
+      title: 'Dogma Will Not Go Quietly',
+      authors: 'Roland Zullo, 2026',
+      desc: 'Small government ideology, a central facet to the legacy of U.S. federalism, stands in direct conflict with an accelerating demand for federal intervention to address pressing national and international issues.  In this chapter, I explain how the privatization movement sought to resolve that tension, how the claims made by privatization advocates failed to materialize, and offer cross-national evidence on the promise of democratic socialism.',
+      url: 'https://drive.google.com/file/d/1raEljKs1d4wiC-_rTYiX3jPQbhqA_8yA/view?usp=sharing',
+      authorName: 'Author, "Dogma"',
+      authorEmail: 'rzullo@umich.edu'
+    },
+    {
+      id: 'Auburn',
+      tag: 'Appendix A',
+      title: 'City Refuse and Landfill',
+      authors: 'Roland Zullo, 2026',
+      desc: 'Auburn NY was an early case on privatization that involved refuse collection and landfill management. Privatization shaved about 5 percent off the cost of refuse collection, but only by forsaking valued service dimensions, including recyclable collection and sorting, yard waste pick-up, and coordinated responses to community emergencies.',
+      url: 'https://drive.google.com/file/d/1raEljKs1d4wiC-_rTYiX3jPQbhqA_8yA/view?usp=sharing',
+      authorName: 'Author, "Refuse and Landfill"',
+      authorEmail: 'rzullo@umich.edu'
+    },
+    {
+      id: 'Welfare to Work',
+      tag: 'Appendix B',
+      title: 'Welfare to Work',
+      authors: 'Roland Zullo, 2026',
+      desc: 'This early analysis involved welfare to work counseling in San Diego County. The case demonstrated the folly of the managed competition concept. Pitting multiple vendors against each other as a way to pressure toward better performance made no sense given the nature of welfare to work counseling services.',
+      url: 'https://drive.google.com/file/d/1vxVMP3MQm1nsGTGMzDViczi-oPLuN-kf/view?usp=sharing',
+      authorName: 'Author, "Welfare to Work"',
+      authorEmail: 'rzullo@umich.edu'
+    },
+    {
+      id: 'MI Child',
+      tag: 'Appendix C',
+      title: 'Child Health Insurance',
+      authors: 'Roland Zullo, 2026',
+      desc: 'MI Child is a Michigan health insurance program that covers children from non-rich households that do not qualify for Medicaid. At the time, MI Child was administered by a private company. The analysis concluded that the State of Michigan could improve service responsiveness and reduce costs by about half by combining MI Child with the publicly-run Healthy Kids program.',
+      url: 'https://drive.google.com/file/d/13Jhdw0F4gSf5IdTN-U0d-vNxni0K-sGs/view?usp=sharing',
+      authorName: 'Author, "Child Health Insurance"',
+      authorEmail: 'rzullo@umich.edu'
+    },
+    {
+      id: 'Prison Health Care',
+      tag: 'Appendix D',
+      title: 'Prison Health Care',
+      authors: 'Roland Zullo, 2026',
+      desc: 'In 2012, the Michigan DOC was pressured to privatize physical and mental health services. Bid documents revealed that privatizing care would result in a significant loss in professional standards.  Both bidders proposed swapping higher qualified staff with less educated and fewer staff. Further, the case demonstrated that tension between best practice medical care and the profit motive is unresolvable, thus necessitating diligent and costly provider monitoring.',
+      url: 'https://drive.google.com/file/d/1o-d9qjQx3xznR_qeVw8XTU0jWqQuPBPN/view?usp=sharing',
+      authorName: 'Author, "Prison Health Care"',
+      authorEmail: 'rzullo@umich.edu'
+    },
+    {
+      id: 'Prison Food',
+      tag: 'Appendix E',
+      title: 'Prison Food',
+      authors: 'Roland Zullo, 2026',
+      desc: 'In 2013, the MDOC privatized food services throughout the State prison system. To understand the effects of this policy, our team conducted focus group interviews of correctional officers that are assigned to the chow hall area. This extended analysis describes how food service privatization contributed to a breakdown in prison order.',
+      url: 'https://drive.google.com/file/d/16r2REeNMc23MzJzR4HT3L38d-s9vgdt0/view?usp=sharing',
+      authorName: 'Author, "Prison Food"',
+      authorEmail: 'rzullo@umich.edu'
+    },
+     {
+      id: 'Road Engineers',
+      tag: 'Appendix F',
+      title: 'Road and Highway Engineers',
+      authors: 'Roland Zullo, 2026',
+      desc: 'This Michigan DOT case is an example of forced privatization through expedited attrition. In the late 1990s, Michigan offered retirement incentives for State road and highway engineers at the same time they had a department hiring freeze. Eventually, the State had to hire private contractors, may of whom were retired State engineers. The State of Michigan paid tens of millions in extra charges to these private firms.',
+      url: 'https://drive.google.com/file/d/1cZtPpJw8nqPqQZpopF230hqlUbt1buLG/view?usp=sharing',
+      authorName: 'Author, "Road and Highway Engineering"',
+      authorEmail: 'rzullo@umich.edu'
+    }
+  ];
+  // NOTE: authorEmail values above are placeholders. Replace each with the
+  // real contact address for that chapter's author before publishing this page.
+
+  let activeId = CATALOG[0].id;
+  const drawer = document.getElementById('drawer');
+  const cardMount = document.getElementById('cardMount');
+
+  function renderDrawer(){
+    const items = CATALOG.map(item => `
+      <button class="drawer-item ${item.id === activeId ? 'active' : ''}" data-id="${item.id}">
+        <span class="drawer-tag">${item.tag}</span>
+        <span class="drawer-title">${item.title}</span>
+      </button>
+    `).join('');
+    drawer.innerHTML = '<div class="drawer-label">Catalog</div>' + items;
+    drawer.querySelectorAll('.drawer-item').forEach(btn => {
+      btn.addEventListener('click', () => {
+        activeId = btn.dataset.id;
+        renderDrawer();
+        renderCard();
+      });
+    });
+  }
+
+  async function getDownloadCount(id){
+    try {
+      const res = await window.storage.get('downloads:' + id, true);
+      return res ? parseInt(res.value, 10) || 0 : 0;
+    } catch (e) {
+      return 0;
+    }
+  }
+
+  async function bumpDownloadCount(id){
+    try {
+      const current = await getDownloadCount(id);
+      const next = current + 1;
+      await window.storage.set('downloads:' + id, String(next), true);
+      return next;
+    } catch (e) {
+      console.error('Could not save download count', e);
+      return null;
+    }
+  }
+
+  async function getComments(id){
+    try {
+      const res = await window.storage.get('comments:' + id, true);
+      return res ? JSON.parse(res.value) : [];
+    } catch (e) {
+      return [];
+    }
+  }
+
+  async function saveComments(id, comments){
+    try {
+      const result = await window.storage.set('comments:' + id, JSON.stringify(comments), true);
+      return !!result;
+    } catch (e) {
+      console.error('Could not save comment', e);
+      return false;
+    }
+  }
+
+  function escapeHtml(str){
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+  }
+
+  function timeAgo(ts){
+    const diff = Date.now() - ts;
+    const mins = Math.floor(diff / 60000);
+    if (mins < 1) return 'just now';
+    if (mins < 60) return mins + 'm ago';
+    const hrs = Math.floor(mins / 60);
+    if (hrs < 24) return hrs + 'h ago';
+    const days = Math.floor(hrs / 24);
+    return days + 'd ago';
+  }
+
+  async function renderCard(){
+    const item = CATALOG.find(c => c.id === activeId);
+    cardMount.innerHTML = `
+      <div class="card">
+        <div class="card-eyebrow">${item.tag}</div>
+        <h2 class="card-title">${item.title}</h2>
+        <div class="card-authors">${item.authors}</div>
+        <p class="card-desc">${item.desc}</p>
+        <div class="card-actions">
+          <a class="download-btn" id="downloadBtn" href="${item.url}" download target="_blank" rel="noopener">Download PDF</a>
+          <div class="duecard">
+            <div class="duecard-label">Times borrowed</div>
+            <span class="duecard-count" id="countDisplay"></span>
+          </div>
+        </div>
+
+        <div class="marginalia-section">
+          <h3 class="marginalia-heading">Marginalia</h3>
+          <p class="marginalia-hint">Notes left by readers of this paper.</p>
+
+          <div class="marginalia-form">
+            <input type="text" id="noteName" placeholder="Your name (optional)" maxlength="40" />
+            <textarea id="noteBody" placeholder="Leave a note on this paper..." maxlength="600"></textarea>
+            <button class="marginalia-submit" id="noteSubmit">Pin note</button>
+            <div class="status-line" id="noteStatus"></div>
+          </div>
+
+          <div class="note-list" id="noteList">
+            <div class="empty-state">Loading notes</div>
+          </div>
+        </div>
+      </div>
+    `;
+
+    const countDisplay = document.getElementById('countDisplay');
+    getDownloadCount(item.id).then(count => {
+      countDisplay.textContent = count;
+    });
+
+    document.getElementById('downloadBtn').addEventListener('click', async () => {
+      const newCount = await bumpDownloadCount(item.id);
+      if (newCount !== null) {
+        countDisplay.textContent = newCount;
+        countDisplay.classList.remove('bump');
+        void countDisplay.offsetWidth;
+        countDisplay.classList.add('bump');
+      }
+    });
+
+    const noteList = document.getElementById('noteList');
+    const notes = await getComments(item.id);
+    renderNotes(noteList, notes);
+
+    const submitBtn = document.getElementById('noteSubmit');
+    submitBtn.addEventListener('click', async () => {
+      const nameInput = document.getElementById('noteName');
+      const bodyInput = document.getElementById('noteBody');
+      const statusLine = document.getElementById('noteStatus');
+      const body = bodyInput.value.trim();
+      if (!body) {
+        statusLine.textContent = 'Write a note before pinning it.';
+        return;
+      }
+      submitBtn.disabled = true;
+      statusLine.textContent = 'Pinning';
+      try {
+        const existing = await getComments(item.id);
+        const newNote = {
+          name: nameInput.value.trim() || 'Anonymous reader',
+          body: body,
+          ts: Date.now()
+        };
+        const updated = [...existing, newNote];
+        const ok = await saveComments(item.id, updated);
+        if (ok) {
+          renderNotes(noteList, updated);
+          bodyInput.value = '';
+          statusLine.textContent = 'Note pinned.';
+        } else {
+          statusLine.textContent = 'Could not pin note. Try again.';
+        }
+      } catch (e) {
+        statusLine.textContent = 'Could not pin note. Try again.';
+      } finally {
+        submitBtn.disabled = false;
+      }
+    });
+  }
+
+  function renderNotes(mount, notes){
+    if (!notes || notes.length === 0) {
+      mount.innerHTML = '<div class="empty-state">No notes yet. Be the first to leave one.</div>';
+      return;
+    }
+    const sorted = [...notes].sort((a, b) => b.ts - a.ts);
+    mount.innerHTML = sorted.map(n => `
+      <div class="note">
+        <div class="note-meta">
+          <span>${escapeHtml(n.name)}</span>
+          <span>${timeAgo(n.ts)}</span>
+        </div>
+        <div class="note-body">${escapeHtml(n.body)}</div>
+      </div>
+    `).join('');
+  }
+
+  function initCorrespondence(){
+    const select = document.getElementById('mailChapter');
+    const recipient = document.getElementById('mailRecipient');
+    const sendBtn = document.getElementById('mailSendBtn');
+    const status = document.getElementById('mailStatus');
+
+    select.innerHTML = CATALOG.map(item =>
+      `<option value="${item.id}">${item.title}</option>`
+    ).join('');
+
+    function updateRecipient(){
+      const item = CATALOG.find(c => c.id === select.value);
+      recipient.textContent = item.authorEmail;
+    }
+
+    select.addEventListener('change', updateRecipient);
+    updateRecipient();
+
+    sendBtn.addEventListener('click', () => {
+      const item = CATALOG.find(c => c.id === select.value);
+      const nameInput = document.getElementById('mailName');
+      const emailInput = document.getElementById('mailEmail');
+      const bodyInput = document.getElementById('mailBody');
+
+      const message = bodyInput.value.trim();
+      if (!message) {
+        status.textContent = 'Write a message before sending.';
+        return;
+      }
+
+      const readerName = nameInput.value.trim() || 'A reader of the archive';
+      const readerEmail = emailInput.value.trim();
+
+      const subject = 'Note on: ' + item.title;
+      let body = message + '\n\n—\nFrom: ' + readerName;
+      if (readerEmail) body += ' (' + readerEmail + ')';
+      body += '\nVia: Field Notes Archive';
+
+      const mailtoUrl = 'mailto:' + encodeURIComponent(item.authorEmail) +
+        '?subject=' + encodeURIComponent(subject) +
+        '&body=' + encodeURIComponent(body) +
+        (readerEmail ? '&cc=' + encodeURIComponent(readerEmail) : '');
+
+      window.location.href = mailtoUrl;
+      status.textContent = 'Opening your email program';
+    });
+  }
+
+  renderDrawer();
+  renderCard();
+  initCorrespondence();
+})();
+</script>
